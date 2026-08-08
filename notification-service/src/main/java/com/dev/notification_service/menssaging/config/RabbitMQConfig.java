@@ -1,9 +1,8 @@
-package com.example.cadastro.menssaging.config;
+package com.dev.notification_service.menssaging.config;
 
-
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 
 @Configuration
 public class RabbitMQConfig {
