@@ -12,11 +12,10 @@ public class UserRegisteredEventConsumer {
 
     private final EmailService emailService;
 
-    @RabbitListener(queues = "notification.user.registered")
+    @RabbitListener(
+            queues = "notification.user.registered",
+            containerFactory = "rabbitListenerContainerFactory")
     public void consume(UserRegisteredEvent event) {
-        System.out.println("Evento recebido: " +event);
-
-        emailService.sendWelcomeEmail(event);
-
+         emailService.sendWelcomeEmail(event);
     }
 }
