@@ -3,6 +3,9 @@ package com.example.cadastro.user.service;
 import com.example.cadastro.exception.EmailAlreadyExistsException;
 import com.example.cadastro.menssaging.events.UserRegisteredEvent;
 import com.example.cadastro.menssaging.publisher.UserEventPublisher;
+import com.example.cadastro.outbox.entity.OutboxEvent;
+import com.example.cadastro.outbox.factory.OutboxEventFactory;
+import com.example.cadastro.outbox.repository.OutboxEventRepository;
 import com.example.cadastro.user.dto.CreateUserRequest;
 import com.example.cadastro.user.dto.UserResponse;
 import com.example.cadastro.user.entitiy.User;
@@ -19,7 +22,9 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
 
-    private final UserEventPublisher publisher;
+    private final OutboxEventRepository outboxEventRepository;
+
+    private final OutboxEventFactory outboxEventFactory;
 
     @Transactional
     public UserResponse register(CreateUserRequest request) {
@@ -33,9 +38,10 @@ public class UserService {
 
         UserRegisteredEvent event = UserRegisteredEvent.create(user.getId(), user.getEmail());
 
-        publisher.publish(event);
+        OutboxEvent outboxEvent = outboxEventFactory.create(event);
+
+        outboxEventRepository.save(outboxEvent);
 
         return new UserResponse(savedUser.getId(), savedUser.getName(), savedUser.getEmail(), savedUser.getCreatedAt());
-
     }
 }
